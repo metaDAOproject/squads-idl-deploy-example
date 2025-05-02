@@ -21,6 +21,10 @@
           {
             "name": "age",
             "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
