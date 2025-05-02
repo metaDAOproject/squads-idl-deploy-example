@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("1337wNtnZnGMvdKPBT1cUXfZnhvUgWv73fzUviMLj8x6");
+declare_id!("YMEAkN6gFcPhRYAHs8qvo1b78X5FPUErFCidpkkmdev");
 
 #[program]
 pub mod idl_example {
@@ -18,4 +18,5 @@ pub struct Initialize {}
 pub struct User {
     pub name: String,
     pub age: u8,
+    pub bump: u8,
 }

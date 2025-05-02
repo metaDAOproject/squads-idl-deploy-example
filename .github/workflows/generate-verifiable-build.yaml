@@ -7,17 +7,17 @@ on:
         required: true
         type: string
         description: "The program id of the program we are uploading"
-        default: "1337wNtnZnGMvdKPBT1cUXfZnhvUgWv73fzUviMLj8x6"
+        default: "YMEAkN6gFcPhRYAHs8qvo1b78X5FPUErFCidpkkmdev"
       program-executable-data:
         required: true
         type: string
         description: "The program executable data address"
-        default: "H5rxQS4BGc77552Da6aDDNH2G7HCpC1fUxyeuDpwEQK4"
+        default: "HxHNfRUYJk8pytutYGtEBE8M9ysKoKgdSem31b3D4y2S"
       multisig-pda:
         required: true
         type: string
         description: "The multisig pda to which the vault belongs"
-        default: "J5wHJwmkyhx1rnn7xeYyUVKYgCvDPwGJz4h44WE6cHCJ"
+        default: "67o4Pw7dHYWaSuo9wnWAHgMZMg1zxKWFqPhkeBoAEaLn"
       multisig-vault-index:
         required: true
         type: string
@@ -27,12 +27,12 @@ on:
         required: true
         type: string
         description: "Address of the multisig vault executing the upgrade"
-        default: "ALxsUozu7d8ibng4k3aF9CPj1VGPGt8ZRogbpUwYsZkq"
+        default: "Cd969x9gMzrj7GkfTCzonTZeFpGWRMoTJRQpd6veeqHZ"
       spill-address:
         required: true
         type: string
         description: "Spill address to recoup funds from buffers"
-        default: "2SG7fCnreQ9wHoqQC7U6pfDN2rYmBqExKuqcGR3StrZW"
+        default: "CRANkLNAUCPFapK5zpc1BvXA1WjfZpo6wEmssyECxuxf"
       anchor-version:
         required: true
         type: string
