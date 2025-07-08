@@ -33,6 +33,7 @@
           {
             "name": "isVerified",
             "type": "bool"
+
           }
         ]
       }
