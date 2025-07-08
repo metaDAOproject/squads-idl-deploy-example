@@ -51,11 +51,6 @@ on:
         type: string
         default: "2.2.15" # 07/08/2025, wanted 2.2.19 but solana-verify doesn't support it yet
         description: "The solana cli version to use"
-      node-version:
-        required: true
-        type: string
-        default: "20.18.0" # current solana/anchor repo uses this as of 07/08/2025
-        description: "The node version to use"
       network:
         required: true
         type: string

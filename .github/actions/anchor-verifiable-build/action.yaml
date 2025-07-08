@@ -15,7 +15,8 @@ inputs:
     required: true
   node-version:
     description: 'Version of Node.js to use'
-    required: true
+    required: false
+    default: '20.18.0' 
   features:
     description: 'Features to pass to cargo'
     required: false
