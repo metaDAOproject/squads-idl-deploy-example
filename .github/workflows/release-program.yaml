@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: generate-verifiable-build
+name: generate-verifiable-build-testing
 on:
   push:
     tags:
