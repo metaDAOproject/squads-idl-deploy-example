@@ -1,8 +1,16 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: generate-verifiable-build
 on:
+  push:
+    tags:
+        - "program-*" # Push events to matching program-*, i.e. program-amm-4.0.1
   workflow_dispatch:
     inputs:
+      program:
+        required: true
+        type: string
+        description: "The program name to build and upload"
+        default: "idl_example"
       program-id:
         required: true
         type: string
@@ -36,13 +44,18 @@ on:
       anchor-version:
         required: true
         type: string
-        default: "0.29.0"
+        default: "0.31.1" # 07/08/2025
         description: "The anchor version to use"
       solana-cli-version:
         required: true
         type: string
-        default: "2.1.14"
+        default: "2.2.15" # 07/08/2025, wanted 2.2.19 but solana-verify doesn't support it yet
         description: "The solana cli version to use"
+      node-version:
+        required: true
+        type: string
+        default: "20.18.0" # current solana/anchor repo uses this as of 07/08/2025
+        description: "The node version to use"
       network:
         required: true
         type: string
@@ -55,7 +68,7 @@ on:
         description: "The endpoint to use"
 
 jobs:
-  generate-verifiable-idl_example:
+  generate-verifiable:
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -63,28 +76,29 @@ jobs:
       buffer: ${{ steps.deploy-verifiable-buffer.outputs.buffer }}
       idl-buffer: ${{ steps.deploy-verifiable-buffer.outputs.idl-buffer }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/anchor-verifiable-build
         with:
-          program: idl_example
-          anchor-version: '0.29.0'
-          solana-cli-version: '2.1.14'
+          program: ${{ inputs.program }}
+          anchor-version: ${{ inputs.anchor-version }}
+          solana-cli-version: ${{ inputs.solana-cli-version }}
+          node-version: ${{ inputs.node-version }}
       - run: 'git pull --rebase'
       - run: mkdir -p verifiable-builds
-      - run: cp target/deploy/idl_example.so ./verifiable-builds/idl_example.so
-      - run: cp target/idl/idl_example.json ./verifiable-builds/idl_example.json
+      - run: cp target/deploy/${{ inputs.program }}.so ./verifiable-builds/${{ inputs.program }}.so
+      - run: cp target/idl/${{ inputs.program }}.json ./verifiable-builds/${{ inputs.program }}.json
       - name: Commit verifiable build back to mainline
         uses: EndBug/add-and-commit@v9.1.4
         with:
           default_author: github_actions
-          message: 'Update idl_example verifiable build'
+          message: 'Update ${{ inputs.program }} verifiable build'
       - name: Deploy verifiable build buffer and IDL
         id: deploy-verifiable-buffer
         uses: ./.github/actions/deploy-verifiable-buffer
         with:
           network: ${{ inputs.network }}
           keypair: ${{ secrets.DEPLOY_KEYPAIR }}
-          program: idl_example
+          program: ${{ inputs.program }}
           program-id: ${{ inputs.program-id }}
           buffer-authority: ${{ inputs.multisig-vault-address }}
           anchor-version: ${{ inputs.anchor-version }}
@@ -93,24 +107,25 @@ jobs:
         run: |
           echo "Buffer address: ${{ steps.deploy-verifiable-buffer.outputs.buffer }}"
           echo "IDL address: ${{ steps.deploy-verifiable-buffer.outputs.idl-buffer }}"
-  upload-verifiable-idl_example:
+  upload-verifiable-idl:
     runs-on: ubuntu-22.04
-    needs: generate-verifiable-idl_example
+    needs: generate-verifiable
     steps:
       - name: Log buffer and IDL addresses
         run: |
-          echo "Buffer address: ${{ needs.generate-verifiable-idl_example.outputs.buffer }}"
-          echo "IDL address: ${{ needs.generate-verifiable-idl_example.outputs.idl-buffer }}"
+          echo "Buffer address: ${{ needs.generate-verifiable.outputs.buffer }}"
+          echo "IDL address: ${{ needs.generate-verifiable.outputs.idl-buffer }}"
       - name: Set upgrade authority to Squads multisig
+      # will need to be migrated and changed for v0.31.1
         uses: pileks/squads-v4-program-upgrade@1.0.0
         with:
           network-url: ${{ inputs.endpoint }}
           multisig-pda: ${{ inputs.multisig-pda }}
           multisig-vault-index: ${{ inputs.multisig-vault-index }}
           program-id: ${{ inputs.program-id }}
-          buffer: "${{ needs.generate-verifiable-idl_example.outputs.buffer }}"
+          buffer: "${{ needs.generate-verifiable.outputs.buffer }}"
           spill-address: ${{ inputs.spill-address }}
           name: "Test Upgrade"
           executable-data: ${{ inputs.program-executable-data }}
           keypair: ${{ secrets.DEPLOY_KEYPAIR }}
-          idl-buffer: "${{ needs.generate-verifiable-idl_example.outputs.idl-buffer }}"
+          idl-buffer: "${{ needs.generate-verifiable.outputs.idl-buffer }}"

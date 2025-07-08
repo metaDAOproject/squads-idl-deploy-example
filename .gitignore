@@ -6,6 +6,7 @@ target
 node_modules
 test-ledger
 .yarn
+verifiable-builds
 
 # Deploy keys (locally stored)
 deploy-keys

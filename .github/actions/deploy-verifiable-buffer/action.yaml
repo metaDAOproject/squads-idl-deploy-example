@@ -24,15 +24,15 @@ inputs:
   anchor-version:
     description: "The anchor version to use"
     required: true
-    default: "0.29.0"
+    default: "0.31.1"
   solana-cli-version:
     description: "The solana cli version to use"
     required: true
-    default: "2.1.14"
+    default: "2.2.15"
   node-version:
     description: "The node version to use"
     required: true
-    default: "20.16.0"
+    default: "20.18.0"
 outputs:
   buffer:
     description: "The buffer address"
@@ -60,7 +60,7 @@ runs:
     - name: Buffer Deploy
       if: steps.cache-buffer.outputs.cache-hit != 'true'
       id: buffer-deploy
-      uses: nick-invision/retry@v2
+      uses: nick-invision/retry@v2 # maybe switch to v3.0.1 https://github.com/nick-fields/retry/releases
       with:
         timeout_minutes: 30
         max_attempts: 10
@@ -77,6 +77,7 @@ runs:
         timeout_minutes: 10
         max_attempts: 50
         shell: bash
+        # this command doesn't work for 0.31.1, need to fix
         command: anchor idl write-buffer $PROGRAM_ID --filepath ./target/idl/$PROGRAM.json --provider.cluster $NETWORK --provider.wallet ./deploy-keypair.json > idl-buffer.out
       env:
         PROGRAM_ID: ${{ inputs.program-id }}
@@ -99,6 +100,7 @@ runs:
         timeout_minutes: 10
         max_attempts: 20
         shell: bash
+        # this might not work for 0.31.1, need to fix
         command: anchor idl set-authority $IDL_BUFFER --provider.cluster $NETWORK --program-id $PROGRAM_ID --new-authority $AUTHORITY --provider.wallet ./deploy-keypair.json
       env:
         IDL_BUFFER: ${{ steps.buffer-deploy-store.outputs.IDL_BUFFER }}
@@ -112,6 +114,7 @@ runs:
         timeout_minutes: 10
         max_attempts: 20
         shell: bash
+        # this might not work for 0.31.1, need to fix
         command: solana program set-buffer-authority $BUFFER -k ./deploy-keypair.json --new-buffer-authority $AUTHORITY -u $NETWORK
       env:
         BUFFER: ${{ steps.buffer-deploy-store.outputs.BUFFER }}

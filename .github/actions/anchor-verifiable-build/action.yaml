@@ -13,6 +13,9 @@ inputs:
   solana-cli-version:
     description: 'Version of Solana to use'
     required: true
+  node-version:
+    description: 'Version of Node.js to use'
+    required: true
   features:
     description: 'Features to pass to cargo'
     required: false
@@ -20,11 +23,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ./.github/actions/setup
       with:
         anchor-version: ${{ inputs.anchor-version }}
         solana-cli-version: ${{ inputs.solana-cli-version }}
+        node-version: ${{ inputs.node-version }}
     - name: Cache Cargo registry + index
       uses: actions/cache@v4
       id: cache-cargo-registry
@@ -41,7 +45,7 @@ runs:
         path: |
           ~/.cargo/bin/solana-verify
         key: cargo-${{ runner.os }}-solana-verify
-    - run: cargo install solana-verify --version 0.4.4
+    - run: cargo install solana-verify --version 0.4.6 # https://github.com/Ellipsis-Labs/solana-verifiable-build/releases
       if: steps.cache-solana-verify.outputs.cache-hit != 'true'
       shell: bash
     - run: anchor build --program-name $PROGRAM --arch sbf

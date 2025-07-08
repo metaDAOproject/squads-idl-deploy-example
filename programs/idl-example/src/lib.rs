@@ -20,5 +20,4 @@ pub struct User {
     pub age: u8,
     pub bump: u8,
     pub is_admin: bool,
-    pub is_verified: bool,
 }
