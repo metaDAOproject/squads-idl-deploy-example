@@ -1,0 +1,118 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: release-program
+on:
+  workflow_dispatch:
+    inputs:
+      program:
+        required: true
+        type: string
+        description: "The program name to build and upload"
+        default: "idl_example"
+      program-id:
+        required: true
+        type: string
+        description: "The program id of the program we are uploading"
+        default: "YMEAkN6gFcPhRYAHs8qvo1b78X5FPUErFCidpkkmdev"
+      program-executable-data:
+        required: true
+        type: string
+        description: "The program executable data address"
+        default: "HxHNfRUYJk8pytutYGtEBE8M9ysKoKgdSem31b3D4y2S"
+      multisig-pda:
+        required: true
+        type: string
+        description: "The multisig pda to which the vault belongs"
+        default: "67o4Pw7dHYWaSuo9wnWAHgMZMg1zxKWFqPhkeBoAEaLn"
+      multisig-vault-index:
+        required: true
+        type: string
+        description: "Index of the multisig vault executing the upgrade"
+        default: "0"
+      multisig-vault-address:
+        required: true
+        type: string
+        description: "Address of the multisig vault executing the upgrade"
+        default: "Cd969x9gMzrj7GkfTCzonTZeFpGWRMoTJRQpd6veeqHZ"
+      spill-address:
+        required: true
+        type: string
+        description: "Spill address to recoup funds from buffers"
+        default: "CRANkLNAUCPFapK5zpc1BvXA1WjfZpo6wEmssyECxuxf"
+      anchor-version:
+        required: true
+        type: string
+        default: "0.31.1" # 07/08/2025
+        description: "The anchor version to use"
+      solana-cli-version:
+        required: true
+        type: string
+        default: "2.2.15" # 07/08/2025, wanted 2.2.19 but solana-verify doesn't support it yet
+        description: "The solana cli version to use"
+      endpoint:
+        required: true
+        type: string
+        default: "https://api.devnet.solana.com"
+        description: "The endpoint to use"
+
+jobs:
+  generate-verifiable:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    outputs:
+      buffer: ${{ steps.deploy-verifiable-buffer.outputs.buffer }}
+      idl-buffer: ${{ steps.deploy-verifiable-buffer.outputs.idl-buffer }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/anchor-verifiable-build
+        with:
+          program: ${{ inputs.program }}
+          anchor-version: ${{ inputs.anchor-version }}
+          solana-cli-version: ${{ inputs.solana-cli-version }}
+          node-version: ${{ inputs.node-version }}
+      - run: 'git pull --rebase'
+      - run: mkdir -p verifiable-builds
+      - run: cp target/deploy/${{ inputs.program }}.so ./verifiable-builds/${{ inputs.program }}.so
+      - run: cp target/idl/${{ inputs.program }}.json ./verifiable-builds/${{ inputs.program }}.json
+      - name: Commit verifiable build back to mainline
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          default_author: github_actions
+          message: 'Update ${{ inputs.program }} verifiable build'
+      - name: Deploy verifiable build buffer and IDL
+        id: deploy-verifiable-buffer
+        uses: ./.github/actions/deploy-verifiable-buffer
+        with:
+          network: ${{ inputs.network }}
+          keypair: ${{ secrets.DEPLOY_KEYPAIR }}
+          program: ${{ inputs.program }}
+          program-id: ${{ inputs.program-id }}
+          buffer-authority: ${{ inputs.multisig-vault-address }}
+          anchor-version: ${{ inputs.anchor-version }}
+          node-version: '20.16.0'
+      - name: Log buffer and IDL addresses
+        run: |
+          echo "Buffer address: ${{ steps.deploy-verifiable-buffer.outputs.buffer }}"
+          echo "IDL address: ${{ steps.deploy-verifiable-buffer.outputs.idl-buffer }}"
+  upload-verifiable-idl:
+    runs-on: ubuntu-22.04
+    needs: generate-verifiable
+    steps:
+      - name: Log buffer and IDL addresses
+        run: |
+          echo "Buffer address: ${{ needs.generate-verifiable.outputs.buffer }}"
+          echo "IDL address: ${{ needs.generate-verifiable.outputs.idl-buffer }}"
+      - name: Set upgrade authority to Squads multisig
+      # will need to be migrated and changed for v0.31.1
+        uses: pileks/squads-v4-program-upgrade@1.0.0
+        with:
+          network-url: ${{ inputs.endpoint }}
+          multisig-pda: ${{ inputs.multisig-pda }}
+          multisig-vault-index: ${{ inputs.multisig-vault-index }}
+          program-id: ${{ inputs.program-id }}
+          buffer: "${{ needs.generate-verifiable.outputs.buffer }}"
+          spill-address: ${{ inputs.spill-address }}
+          name: "Test Upgrade"
+          executable-data: ${{ inputs.program-executable-data }}
+          keypair: ${{ secrets.DEPLOY_KEYPAIR }}
+          idl-buffer: "${{ needs.generate-verifiable.outputs.idl-buffer }}"

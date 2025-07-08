@@ -25,6 +25,15 @@
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "isAdmin",
+            "type": "bool"
+          },
+          {
+            "name": "isVerified",
+            "type": "bool"
+
           }
         ]
       }

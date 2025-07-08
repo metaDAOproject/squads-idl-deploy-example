@@ -19,4 +19,5 @@ pub struct User {
     pub name: String,
     pub age: u8,
     pub bump: u8,
+    pub is_admin: bool,
 }
