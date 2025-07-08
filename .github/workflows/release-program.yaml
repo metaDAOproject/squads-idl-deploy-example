@@ -1,9 +1,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: generate-verifiable-build-testing
+name: release-program
 on:
-  push:
-    tags:
-        - "program-*" # Push events to matching program-*, i.e. program-amm-4.0.1
   workflow_dispatch:
     inputs:
       program:
