@@ -51,11 +51,6 @@ on:
         type: string
         default: "2.2.15" # 07/08/2025, wanted 2.2.19 but solana-verify doesn't support it yet
         description: "The solana cli version to use"
-      network:
-        required: true
-        type: string
-        default: "devnet"
-        description: "The network to use"
       endpoint:
         required: true
         type: string
