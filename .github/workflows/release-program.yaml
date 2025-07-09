@@ -71,15 +71,9 @@ jobs:
           solana-cli-version: ${{ inputs.solana-cli-version }}
           node-version: ${{ inputs.node-version }}
       - run: |
-          cp target/deploy/${{ inputs.program }}.so /tmp/
-          cp target/idl/${{ inputs.program }}.json /tmp/
-          
-          git reset --hard
-          git pull --rebase
-          
-          mkdir -p target/deploy target/idl
-          cp /tmp/${{ inputs.program }}.so target/deploy/
-          cp /tmp/${{ inputs.program }}.json target/idl/
+          git stash             
+          git pull --rebase      
+          git stash pop      
       - run: mkdir -p verifiable-builds
       - run: cp target/deploy/${{ inputs.program }}.so ./verifiable-builds/${{ inputs.program }}.so
       - run: cp target/idl/${{ inputs.program }}.json ./verifiable-builds/${{ inputs.program }}.json
