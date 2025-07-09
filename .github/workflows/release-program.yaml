@@ -93,6 +93,7 @@ jobs:
           buffer-authority: ${{ inputs.multisig-vault-address }}
           anchor-version: ${{ inputs.anchor-version }}
           node-version: '20.16.0'
+          endpoint: ${{ inputs.endpoint }}
       - name: Log buffer and IDL addresses
         run: |
           echo "Buffer address: ${{ steps.deploy-verifiable-buffer.outputs.buffer }}"
