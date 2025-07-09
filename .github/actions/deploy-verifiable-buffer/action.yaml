@@ -7,7 +7,7 @@ inputs:
     default: "false"
   network:
     description: "The Solana network"
-    required: true
+    required: false
     default: "devnet"
   program:
     description: "The program to build and upload"
@@ -82,7 +82,7 @@ runs:
         max_attempts: 50
         shell: bash
         # this command doesn't work for 0.31.1, need to fix
-        command: anchor idl write-buffer $PROGRAM_ID --filepath ./target/idl/$PROGRAM.json --provider.cluster $NETWORK --provider.wallet ./deploy-keypair.json > idl-buffer.out
+        command: anchor idl write-buffer $PROGRAM_ID --filepath ./target/idl/$PROGRAM.json --provider.cluster ${{ inputs.network }} --provider.wallet ./deploy-keypair.json > idl-buffer.out
       env:
         PROGRAM_ID: ${{ inputs.program-id }}
         PROGRAM: ${{ inputs.program }}
@@ -119,7 +119,7 @@ runs:
         max_attempts: 10
         shell: bash
         # this might not work for 0.31.1, need to fix
-        command: solana program set-buffer-authority $BUFFER --keypair ./deploy-keypair.json --new-buffer-authority $AUTHORITY --url $NETWORK
+        command: solana program set-buffer-authority $BUFFER --keypair ./deploy-keypair.json --new-buffer-authority $AUTHORITY --url ${{ inputs.network }}
       env:
         BUFFER: ${{ steps.buffer-deploy-store.outputs.BUFFER }}
         AUTHORITY: ${{ inputs.buffer-authority }}
