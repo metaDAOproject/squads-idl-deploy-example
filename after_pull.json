@@ -1,0 +1,90 @@
+{
+  "accounts": [
+    {
+      "discriminator": [
+        159,
+        117,
+        95,
+        227,
+        239,
+        151,
+        58,
+        236
+      ],
+      "name": "User"
+    }
+  ],
+  "address": "YMEAkN6gFcPhRYAHs8qvo1b78X5FPUErFCidpkkmdev",
+  "instructions": [
+    {
+      "accounts": [
+        {
+          "name": "user",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              }
+            ]
+          },
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "signer": true,
+          "writable": true
+        },
+        {
+          "address": "11111111111111111111111111111111",
+          "name": "system_program"
+        }
+      ],
+      "args": [],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "name": "initialize"
+    }
+  ],
+  "metadata": {
+    "description": "Created with Anchor",
+    "name": "idl_example",
+    "spec": "0.1.0",
+    "version": "0.1.0"
+  },
+  "types": [
+    {
+      "name": "User",
+      "type": {
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "age",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ],
+        "kind": "struct"
+      }
+    }
+  ]
+}

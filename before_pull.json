@@ -1,0 +1,26 @@
+{
+  "address": "YMEAkN6gFcPhRYAHs8qvo1b78X5FPUErFCidpkkmdev",
+  "instructions": [
+    {
+      "accounts": [],
+      "args": [],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "name": "initialize"
+    }
+  ],
+  "metadata": {
+    "description": "Created with Anchor",
+    "name": "idl_example",
+    "spec": "0.1.0",
+    "version": "0.1.0"
+  }
+}
