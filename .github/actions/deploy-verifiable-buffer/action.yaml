@@ -102,7 +102,7 @@ runs:
       if: steps.cache-buffer.outputs.cache-hit != 'true'
       with:
         timeout_minutes: 10
-        max_attempts: 20
+        max_attempts: 10
         shell: bash
         # this might not work for 0.31.1, need to fix
         command: anchor idl set-authority $IDL_BUFFER --provider.cluster ${{ inputs.network }} --program-id $PROGRAM_ID --new-authority $AUTHORITY --provider.wallet ./deploy-keypair.json
@@ -116,7 +116,7 @@ runs:
       if: steps.cache-buffer.outputs.cache-hit != 'true'
       with:
         timeout_minutes: 10
-        max_attempts: 20
+        max_attempts: 10
         shell: bash
         # this might not work for 0.31.1, need to fix
         command: solana program set-buffer-authority $BUFFER --keypair ./deploy-keypair.json --new-buffer-authority $AUTHORITY --url $NETWORK

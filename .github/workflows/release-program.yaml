@@ -86,7 +86,8 @@ jobs:
         id: deploy-verifiable-buffer
         uses: ./.github/actions/deploy-verifiable-buffer
         with:
-          network: ${{ inputs.network }}
+        # this will need to be manually assigned per env install unless we change one of the 10 inputs
+          network: "devnet"
           keypair: ${{ secrets.DEPLOY_KEYPAIR }}
           program: ${{ inputs.program }}
           program-id: ${{ inputs.program-id }}
