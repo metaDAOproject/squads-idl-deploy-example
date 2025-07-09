@@ -1,42 +1,26 @@
 {
-  "version": "0.1.0",
-  "name": "idl_example",
+  "address": "YMEAkN6gFcPhRYAHs8qvo1b78X5FPUErFCidpkkmdev",
+  "metadata": {
+    "name": "idl_example",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
   "instructions": [
     {
       "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
       "accounts": [],
       "args": []
-    }
-  ],
-  "accounts": [
-    {
-      "name": "User",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "age",
-            "type": "u8"
-          },
-          {
-            "name": "bump",
-            "type": "u8"
-          },
-          {
-            "name": "isAdmin",
-            "type": "bool"
-          },
-          {
-            "name": "isVerified",
-            "type": "bool"
-
-          }
-        ]
-      }
     }
   ]
 }

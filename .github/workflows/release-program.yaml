@@ -70,7 +70,8 @@ jobs:
           anchor-version: ${{ inputs.anchor-version }}
           solana-cli-version: ${{ inputs.solana-cli-version }}
           node-version: ${{ inputs.node-version }}
-      - run: 'git pull --rebase'
+      - run: |     
+          git pull --rebase      
       - run: mkdir -p verifiable-builds
       - run: cp target/deploy/${{ inputs.program }}.so ./verifiable-builds/${{ inputs.program }}.so
       - run: cp target/idl/${{ inputs.program }}.json ./verifiable-builds/${{ inputs.program }}.json
@@ -83,13 +84,15 @@ jobs:
         id: deploy-verifiable-buffer
         uses: ./.github/actions/deploy-verifiable-buffer
         with:
-          network: ${{ inputs.network }}
+        # this will need to be manually assigned per env install unless we change one of the 10 inputs
+          network: 'devnet'
           keypair: ${{ secrets.DEPLOY_KEYPAIR }}
           program: ${{ inputs.program }}
           program-id: ${{ inputs.program-id }}
           buffer-authority: ${{ inputs.multisig-vault-address }}
           anchor-version: ${{ inputs.anchor-version }}
           node-version: '20.16.0'
+          endpoint: ${{ inputs.endpoint }}
       - name: Log buffer and IDL addresses
         run: |
           echo "Buffer address: ${{ steps.deploy-verifiable-buffer.outputs.buffer }}"
