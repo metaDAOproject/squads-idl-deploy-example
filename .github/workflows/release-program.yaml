@@ -70,7 +70,10 @@ jobs:
           anchor-version: ${{ inputs.anchor-version }}
           solana-cli-version: ${{ inputs.solana-cli-version }}
           node-version: ${{ inputs.node-version }}
-      - run: 'git pull --rebase'
+      - run: |
+          git stash             
+          git pull --rebase      
+          git stash pop      
       - run: mkdir -p verifiable-builds
       - run: cp target/deploy/${{ inputs.program }}.so ./verifiable-builds/${{ inputs.program }}.so
       - run: cp target/idl/${{ inputs.program }}.json ./verifiable-builds/${{ inputs.program }}.json
