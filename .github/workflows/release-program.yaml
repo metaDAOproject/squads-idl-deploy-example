@@ -71,9 +71,11 @@ jobs:
           solana-cli-version: ${{ inputs.solana-cli-version }}
           node-version: ${{ inputs.node-version }}
       - run: |
-          git stash             
-          git pull --rebase      
-          git stash pop      
+          git stash
+          git pull --rebase
+          git stash pop || true  
+          git checkout --theirs Cargo.lock || true
+          git add Cargo.lock || true
       - run: mkdir -p verifiable-builds
       - run: cp target/deploy/${{ inputs.program }}.so ./verifiable-builds/${{ inputs.program }}.so
       - run: cp target/idl/${{ inputs.program }}.json ./verifiable-builds/${{ inputs.program }}.json
